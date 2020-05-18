@@ -1,7 +1,6 @@
-// deno run --allow-net mod.ts
+// deno run --allow-net --lock lockfile.json mod.ts
 import { render } from "./masterpage.tsx";
-
-import { Application, Router } from "https://deno.land/x/oak/mod.ts";
+import { Application, Router } from "./deps.ts";
 
 const router = new Router();
 router.get("/", ctx => {
