@@ -30,6 +30,7 @@ export class App extends React.Component<{}, void> {
         }
       };
       xhr.open('GET', '/time');
+      xhr.setRequestHeader("Accept", "application/json");
       xhr.send();
     }
     setInterval(tick, 1000);

@@ -2,21 +2,33 @@
 import { render } from "./masterpage.tsx";
 import { Application, Router } from "./deps.ts";
 
+const controller = new AbortController();
+const { signal } = controller;
+
 const router = new Router();
 router.get("/", ctx => {
     ctx.response.type = ".html";
     ctx.response.body = render();
 });
 router.get("/time", ctx => {
-    ctx.response.type = ".json";
-    ctx.response.body = JSON.stringify({time: new Date()});
+    ctx.response.body = { time: new Date() };
+})
+router.get("/exit", ctx => {
+    controller.abort();
 });
 
 const app = new Application();
+
+app.addEventListener("error", (evt) => {
+  console.error(evt.error);
+});
+
 app.use(router.routes())
     .use(router.allowedMethods())
     .use(ctx => {
         ctx.response.redirect("/");
     });
 
-await app.listen(`127.0.0.1:${3000}`);
+const listenPromise: Promise<void> = app.listen({ port: 3000, signal });
+
+await listenPromise;
